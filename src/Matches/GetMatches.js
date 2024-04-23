@@ -3,21 +3,28 @@ import { useState, useEffect, useRef } from "react";
 export default function GetMatches() {
   const [matchId, setMatchId] = useState("");
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState("");
+  const InputRef = useRef();
 
   // const id = " 7700432060";
   const fetchMatches = async () => {
     if (matchId.length < 10) {
     } else {
+      setLoading("Loading...MatchID: ");
       const response = await fetch(
         `https://api.opendota.com/api/matches/${matchId}`
       );
       const data = await response.json();
+      setLoading("");
       console.log(data);
       setInputValue(data);
     }
   };
+  useEffect(() => {
+    InputRef.current.focus();
+  });
 
-  const onClickHandler = (e) => {
+  const onClickHandler = () => {
     console.log(inputValue);
     setInputValue(matchId);
     fetchMatches();
@@ -33,9 +40,14 @@ export default function GetMatches() {
         placeholder="Enter MatchID"
         value={matchId}
         onChange={onChangeHandler}
+        ref={InputRef}
       ></input>
       <button onClick={onClickHandler}>Search Match</button>
-      <pre>{JSON.stringify(inputValue, null, 2)}</pre>
+
+      <pre>
+        {loading}
+        {JSON.stringify(inputValue, null, 2)}
+      </pre>
     </>
   );
 }
