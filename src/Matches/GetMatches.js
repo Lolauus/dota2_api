@@ -2,22 +2,31 @@ import { useState, useEffect, useRef } from "react";
 
 export default function GetMatches() {
   const [matchId, setMatchId] = useState("");
-  const [inputValue, setInputValue] = useState("");
+  const [matchResponse, setMatchResponse] = useState("");
   const [loading, setLoading] = useState("");
   const InputRef = useRef();
 
   // const id = " 7700432060";
   const fetchMatches = async () => {
-    if (matchId.length < 10) {
-    } else {
-      setLoading("Loading...MatchID: ");
-      const response = await fetch(
-        `https://api.opendota.com/api/matches/${matchId}`
-      );
-      const data = await response.json();
-      setLoading("");
-      console.log(data);
-      setInputValue(data);
+    try {
+      if (matchId.length < 10) {
+      } else {
+        setLoading("Loading...MatchID: ");
+        const response = await fetch(
+          `https://api.opendota.com/api/matches/${matchId}`
+        );
+        const data = await response.json();
+        setLoading("");
+        setMatchId("");
+        setMatchResponse(data);
+
+        if (!response.ok) {
+          throw new Error("To many requests");
+        }
+      }
+    } catch (error) {
+      console.error("Error", error);
+      setMatchResponse("Error, To many Messages");
     }
   };
   useEffect(() => {
@@ -25,10 +34,7 @@ export default function GetMatches() {
   });
 
   const onClickHandler = () => {
-    console.log(inputValue);
-    setInputValue(matchId);
     fetchMatches();
-    setMatchId("");
   };
   const onChangeHandler = (e) => {
     setMatchId(e.target.value);
@@ -46,7 +52,7 @@ export default function GetMatches() {
 
       <pre>
         {loading}
-        {JSON.stringify(inputValue, null, 2)}
+        {JSON.stringify(matchResponse, null, 2)}
       </pre>
     </>
   );
