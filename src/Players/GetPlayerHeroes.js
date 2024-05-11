@@ -1,34 +1,29 @@
 import { useState } from "react";
-import GetMatches from "../Matches/GetMatches";
 
-export default function GetPlayers() {
+export default function GetPlayerHeroes() {
   const [accountId, setAccountId] = useState("");
-  const [player, setPlayer] = useState("");
-  //   const playerID = "49317728";
+  const [heroes, setHeroes] = useState();
 
-  const fetchPlayers = async () => {
+  const fetchHeroes = async () => {
     try {
       if (accountId.length === 8) {
         const response = await fetch(
-          `https://api.opendota.com/api/players/${accountId}`
+          `https://api.opendota.com/api/players/${accountId}/heroes`
         );
         const data = await response.json();
         setAccountId("");
-        setPlayer(data);
+        setHeroes(data);
         if (!response.ok) {
           throw new Error("To many requests");
         }
       }
-      if (accountId.length === 10) {
-        GetMatches({ accountId });
-      }
     } catch (error) {
       console.error("Error", error);
-      setPlayer("Error, To Many Requests");
+      setHeroes("Error, To Many Requests");
     }
   };
   const onClickHandler = () => {
-    fetchPlayers();
+    fetchHeroes();
   };
   const onChangeHandler = (e) => {
     setAccountId(e.target.value);
@@ -40,8 +35,8 @@ export default function GetPlayers() {
         placeholder="Enter playerID"
         onChange={onChangeHandler}
       ></input>
-      <button onClick={onClickHandler}>Search playerID</button>
-      <pre>{JSON.stringify(player, null, 2)}</pre>
+      <button onClick={onClickHandler}>Search bitches</button>
+      <pre>{JSON.stringify(heroes, null, 2)}</pre>
     </>
   );
 }

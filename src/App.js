@@ -1,11 +1,9 @@
-import GetMatches from "./Matches/GetMatches";
-import GetPlayers from "./Players/GetPlayers";
+import Main from "./Main";
 
 function App() {
   return (
     <div className="App">
-      <GetMatches />
-      <GetPlayers />
+      <Main />
     </div>
   );
 }
