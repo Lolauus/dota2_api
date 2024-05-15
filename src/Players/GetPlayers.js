@@ -8,6 +8,7 @@ export default function GetPlayers() {
   const [player, setPlayer] = useState();
   //playerID = "49317728";
 
+  // Vill man ha en separat state för load?
   const fetchPlayers = async () => {
     try {
       if (accountId.length === 8) {

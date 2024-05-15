@@ -7,15 +7,19 @@ export default function GetMatches() {
   const [matchResponse, setMatchResponse] = useState();
   const [loading, setLoading] = useState("");
   //Matchid = " 7700432060";
+  //ÄR detta korrekt sätt av usememo?
   const fetchMatches = useMemo(
     () => async () => {
       try {
         if (matchId.length === 10) {
+          //Har en separat state för load, ja/nej?
           setLoading("Loading...MatchID: ");
           const response = await fetch(
             `https://api.opendota.com/api/matches/${matchId}`
           );
           const data = await response.json();
+          setLoading("");
+          setMatchId("");
           setMatchResponse(data);
 
           if (!response.ok) {

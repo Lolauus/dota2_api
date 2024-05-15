@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Container } from "../Styling/Container";
 
+//en alterativ lösning istället för separata API-calls likt "getmatches/Getplayers... separat"
 export default function ApiHandler(props) {
   const [apiData, setApiData] = useState("");
   const fetchMatches = async () => {

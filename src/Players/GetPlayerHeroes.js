@@ -6,7 +6,6 @@ export default function GetPlayerHeroes() {
   const [accountId, setAccountId] = useState("");
   const [heroes, setHeroes] = useState();
   //playerID = "49317728";
-
   const fetchHeroes = async () => {
     try {
       if (accountId.length === 8) {
