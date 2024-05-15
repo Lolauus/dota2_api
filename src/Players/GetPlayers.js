@@ -1,14 +1,17 @@
 import { useState } from "react";
-import GetMatches from "../Matches/GetMatches";
+import { Container } from "../Styling/Container";
+import { InputButton, InputField } from "../Styling/InputContainer";
+import ApiHandler from "../DataHandler/ApiHandler";
 
 export default function GetPlayers() {
   const [accountId, setAccountId] = useState("");
-  const [player, setPlayer] = useState("");
-  //   const playerID = "49317728";
+  const [player, setPlayer] = useState();
+  //playerID = "49317728";
 
   const fetchPlayers = async () => {
     try {
       if (accountId.length === 8) {
+        setPlayer("Loading...");
         const response = await fetch(
           `https://api.opendota.com/api/players/${accountId}`
         );
@@ -20,7 +23,7 @@ export default function GetPlayers() {
         }
       }
       if (accountId.length === 10) {
-        GetMatches({ accountId });
+        ApiHandler(accountId);
       }
     } catch (error) {
       console.error("Error", error);
@@ -34,14 +37,14 @@ export default function GetPlayers() {
     setAccountId(e.target.value);
   };
   return (
-    <>
-      <input
+    <div>
+      <InputField
         value={accountId}
         placeholder="Enter playerID"
         onChange={onChangeHandler}
-      ></input>
-      <button onClick={onClickHandler}>Search playerID</button>
-      <pre>{JSON.stringify(player, null, 2)}</pre>
-    </>
+      />
+      <InputButton onClick={onClickHandler}>Search PlayerID</InputButton>
+      <Container>{JSON.stringify(player, null, 2)}</Container>
+    </div>
   );
 }

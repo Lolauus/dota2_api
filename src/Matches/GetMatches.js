@@ -1,37 +1,34 @@
-import { useState, useEffect, useRef } from "react";
+import { useMemo, useState } from "react";
+import { Container } from "../Styling/Container";
+import { InputButton, InputField } from "../Styling/InputContainer";
 
 export default function GetMatches() {
   const [matchId, setMatchId] = useState("");
-  const [matchResponse, setMatchResponse] = useState("");
+  const [matchResponse, setMatchResponse] = useState();
   const [loading, setLoading] = useState("");
-  const InputRef = useRef();
+  //Matchid = " 7700432060";
+  const fetchMatches = useMemo(
+    () => async () => {
+      try {
+        if (matchId.length === 10) {
+          setLoading("Loading...MatchID: ");
+          const response = await fetch(
+            `https://api.opendota.com/api/matches/${matchId}`
+          );
+          const data = await response.json();
+          setMatchResponse(data);
 
-  // const Matchid = " 7700432060";
-  const fetchMatches = async () => {
-    try {
-      if (matchId.length < 10) {
-      } else {
-        setLoading("Loading...MatchID: ");
-        const response = await fetch(
-          `https://api.opendota.com/api/matches/${matchId}`
-        );
-        const data = await response.json();
-        setLoading("");
-        setMatchId("");
-        setMatchResponse(data);
-
-        if (!response.ok) {
-          throw new Error("To many requests");
+          if (!response.ok) {
+            throw new Error("To many requests");
+          }
         }
+      } catch (error) {
+        console.error("Error", error);
+        setMatchResponse("Error, To many Messages");
       }
-    } catch (error) {
-      console.error("Error", error);
-      setMatchResponse("Error, To many Messages");
-    }
-  };
-  useEffect(() => {
-    InputRef.current.focus();
-  });
+    },
+    [matchId]
+  );
 
   const onClickHandler = () => {
     fetchMatches();
@@ -41,19 +38,17 @@ export default function GetMatches() {
   };
 
   return (
-    <>
-      <input
+    <div>
+      <InputField
         placeholder="Enter MatchID"
         value={matchId}
         onChange={onChangeHandler}
-        ref={InputRef}
-      ></input>
-      <button onClick={onClickHandler}>Search Match</button>
-
-      <pre>
+      />
+      <InputButton onClick={onClickHandler}>SearchMatch</InputButton>
+      <Container>
         {loading}
         {JSON.stringify(matchResponse, null, 2)}
-      </pre>
-    </>
+      </Container>
+    </div>
   );
 }

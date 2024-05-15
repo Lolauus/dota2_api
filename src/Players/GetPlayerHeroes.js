@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { Container } from "../Styling/Container";
+import { InputButton, InputField } from "../Styling/InputContainer";
 
 export default function GetPlayerHeroes() {
   const [accountId, setAccountId] = useState("");
   const [heroes, setHeroes] = useState();
+  //playerID = "49317728";
 
   const fetchHeroes = async () => {
     try {
@@ -29,14 +32,14 @@ export default function GetPlayerHeroes() {
     setAccountId(e.target.value);
   };
   return (
-    <>
-      <input
+    <div>
+      <InputField
         value={accountId}
         placeholder="Enter playerID"
         onChange={onChangeHandler}
-      ></input>
-      <button onClick={onClickHandler}>Search bitches</button>
-      <pre>{JSON.stringify(heroes, null, 2)}</pre>
-    </>
+      ></InputField>
+      <InputButton onClick={onClickHandler}>Search bitches</InputButton>
+      <Container>{JSON.stringify(heroes, null, 2)}</Container>
+    </div>
   );
 }
