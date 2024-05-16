@@ -21,7 +21,7 @@ export default function GetPlayerHeroes() {
       }
     } catch (error) {
       console.error("Error", error);
-      setHeroes("Error, To Many Requests");
+      setHeroes("Error loading page");
     }
   };
   const onClickHandler = () => {

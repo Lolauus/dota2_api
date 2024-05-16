@@ -28,7 +28,7 @@ export default function GetPlayers() {
       }
     } catch (error) {
       console.error("Error", error);
-      setPlayer("Error, To Many Requests");
+      setPlayer("Error loading page");
     }
   };
   const onClickHandler = () => {

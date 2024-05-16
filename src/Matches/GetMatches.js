@@ -28,7 +28,7 @@ export default function GetMatches() {
         }
       } catch (error) {
         console.error("Error", error);
-        setMatchResponse("Error, To many Messages");
+        setMatchResponse("Error, Could not load page");
       }
     },
     [matchId]
