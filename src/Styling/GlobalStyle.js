@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import img from "./Rubick_Trailer.jpg";
+import img from "./img/Rubick_Trailer.jpg";
 //För att stylea bodyn globalt
 
 export const GlobalStyle = createGlobalStyle`
