@@ -23,7 +23,7 @@ export default function Main() {
       <GlobalStyle />
       <InputField
         value={value}
-        placeholder="Enter MatchiD"
+        placeholder="Enter Player or MatchID"
         onChange={onChangeHandler}
       ></InputField>
       <InputButton onClick={onClickHandler}>Search match</InputButton>

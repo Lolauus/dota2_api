@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container } from "../Styling/Container";
+import PlayerInfo from "./PlayerInfo";
 
 export default function GetPlayers({ searchTerm }) {
   const [playerData, setPlayerData] = useState({
@@ -20,7 +21,7 @@ export default function GetPlayers({ searchTerm }) {
 
   const processedData = useMemo(() => {
     if (playerData.success) {
-      return playerData.players;
+      return playerData;
     }
 
     return [];
@@ -29,7 +30,12 @@ export default function GetPlayers({ searchTerm }) {
   return (
     <Container>
       {playerData.success ? (
-        processedData.map((player, index) => (
+        <PlayerInfo info={playerData.playerInfo} />
+      ) : (
+        <div>{playerData.status}</div>
+      )}
+      {playerData.success ? (
+        processedData.playerHeroes.map((player, index) => (
           <div key={index}>{JSON.stringify(player)}</div>
         ))
       ) : (
