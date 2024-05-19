@@ -1,32 +1,39 @@
-import { useState } from "react";
-// import GetMatches from "./Matches/GetMatches";
-// import GetPlayerHeroes from "./Players/GetPlayerHeroes";
-// import GetPlayers from "./Players/GetPlayers";
-// import { GlobalStyle } from "./Styling/GlobalStyle";
-import ApiHandler from "./DataHandler/ApiHandler";
+import { useState, useCallback } from "react";
+import GetPlayers from "./Players/GetPlayers";
 import { InputField, InputButton } from "./Styling/InputContainer";
-import { Container } from "./Styling/Container";
+import { GlobalStyle } from "./Styling/GlobalStyle";
+import GetMatches from "./Matches/GetMatches";
 
 //För att hålla App.js ren så skapade jag en main som sen APP
 
 export default function Main() {
   const [value, setValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState();
 
-  const onClickHandler = () => {
-    ApiHandler({ value });
-  };
+  const onClickHandler = useCallback(async () => {
+    setSearchTerm(value);
+  }, [value]);
+
   const onChangeHandler = (e) => {
     setValue(e.target.value);
   };
+
   return (
     <div>
+      <GlobalStyle />
       <InputField
         value={value}
         placeholder="Enter MatchiD"
         onChange={onChangeHandler}
       ></InputField>
       <InputButton onClick={onClickHandler}>Search match</InputButton>
-      <Container>{JSON.stringify(value, null, 2)}</Container>
+      {/* <Container></Container> */}
+      {searchTerm ? (
+        <>
+          <GetMatches searchTerm={searchTerm} />
+          <GetPlayers searchTerm={searchTerm} />
+        </>
+      ) : null}
       {/* <GlobalStyle />
       <GetMatches 
       <GetPlayers />

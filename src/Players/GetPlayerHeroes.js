@@ -24,21 +24,21 @@ export default function GetPlayerHeroes() {
       setHeroes("Error loading page");
     }
   };
-    const onClickHandler = () => {
-      fetchHeroes();
-    };
-    const onChangeHandler = (e) => {
-      setAccountId(e.target.value);
-    };
-    return (
-      <div>
-        <InputField
-          value={accountId}
-          placeholder="Enter playerID"
-          onChange={onChangeHandler}
-        ></InputField>
-        <InputButton onClick={onClickHandler}>Search Player Heros</InputButton>
-        <Container>{JSON.stringify(heroes, null, 2)}</Container>
-      </div>
-    );
+  const onClickHandler = () => {
+    fetchHeroes();
+  };
+  const onChangeHandler = (e) => {
+    setAccountId(e.target.value);
+  };
+  return (
+    <div>
+      <InputField
+        value={accountId}
+        placeholder="Enter playerID"
+        onChange={onChangeHandler}
+      ></InputField>
+      <InputButton onClick={onClickHandler}>Search Player Heros</InputButton>
+      <Container>{JSON.stringify(heroes, null, 2)}</Container>
+    </div>
+  );
 }

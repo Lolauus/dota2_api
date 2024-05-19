@@ -1,49 +1,47 @@
-import { Container } from "../Styling/Container";
-
-//en alterativ lösning istället för separata API-calls likt "getmatches/Getplayers... separat"
-
-export default function ApiHandler({ value }) {
-  if (value.length === 10) {
-    const fetchMatches = async () => {
-      const response = await fetch(
-        `https://api.opendota.com/api/matches/${value}`
-      );
-      const data = await response.json();
-      console.log(data);
-      return (
-        <>
-          <Container>{JSON.stringify(data, null, 2)}</Container>
-        </>
-      );
+export default async function ApiHandler({ value }) {
+  async function getMatchData(value) {
+    const matchResult = {
+      players: [],
     };
-    fetchMatches();
+
+    const response = await fetch(
+      `https://api.opendota.com/api/matches/${value}`
+    );
+
+    const data = await response.json();
+
+    if (data.players.length) {
+      data.players.forEach((player) => {
+        matchResult.players.push({
+          player_slot: player["player_slot"],
+          team_number: player["team_number"],
+          kda: player["kda"],
+        });
+      });
+    }
+    return matchResult.players;
   }
-  if (value.length === 8) {
-    const fetchPlayers = async () => {
-      const response = await fetch(
-        `https://api.opendota.com/api/players/${value}`
-      );
-      const data = await response.json();
-      console.log(data);
-      return (
-        <>
-          <Container>{JSON.stringify(data, null, 2)}</Container>
-        </>
-      );
+
+  async function getPlayerData(value) {
+    const playerData = {
+      playerInfo: {},
+      playerHeroes: {},
     };
-    fetchPlayers();
-  } else {
-    const fetchHeroes = async () => {
-      const response = await fetch(
-        `https://api.opendota.com/api/players/${value}/heroes`
-      );
-      const data = await response.json();
-      return (
-        <>
-          <Container>{JSON.stringify(data, null, 2)}</Container>
-        </>
-      );
-    };
-    fetchHeroes();
+
+    const playersInfoResponse = await fetch(
+      `https://api.opendota.com/api/players/${value}`
+    );
+
+    const playerHeroesResponse = await fetch(
+      `https://api.opendota.com/api/players/${value}/heroes`
+    );
+
+    const playerInfo = await playersInfoResponse.json();
+    const playerHeroes = await playerHeroesResponse.json();
+
+    playerData.playerInfo = playerInfo;
+    playerData.playerHeroes = playerHeroes;
+
+    return playerData;
   }
 }

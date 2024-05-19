@@ -1,58 +1,85 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Container } from "../Styling/Container";
-import { InputButton, InputField } from "../Styling/InputContainer";
 
-export default function GetMatches() {
-  const [matchId, setMatchId] = useState("");
-  const [matchResponse, setMatchResponse] = useState();
-  const [loading, setLoading] = useState("");
-  //Matchid = " 7700432060";
-  //ÄR detta korrekt sätt av usememo?
-  const fetchMatches = useMemo(
-    () => async () => {
-      try {
-        if (matchId.length === 10) {
-          //Har en separat state för load, ja/nej?
-          setLoading("Loading...MatchID: ");
-          const response = await fetch(
-            `https://api.opendota.com/api/matches/${matchId}`
-          );
-          const data = await response.json();
-          setLoading("");
-          setMatchId("");
-          setMatchResponse(data);
+export default function GetMatches({ searchTerm }) {
+  const [matchData, setMatchData] = useState({
+    success: false,
+    players: [],
+    status: "",
+  });
 
-          if (!response.ok) {
-            throw new Error("To many requests");
-          }
-        }
-      } catch (error) {
-        console.error("Error", error);
-        setMatchResponse("Error, Could not load page");
-      }
-    },
-    [matchId]
-  );
+  useEffect(() => {
+    async function fetchData(searchTerm) {
+      const data = await fetchMatches(searchTerm);
+      setMatchData(data);
+    }
 
-  const onClickHandler = () => {
-    fetchMatches();
-  };
-  const onChangeHandler = (e) => {
-    setMatchId(e.target.value);
-  };
+    fetchData(searchTerm);
+  }, [searchTerm]);
+
+  const processedPlayers = useMemo(() => {
+    if (matchData.success) {
+      return matchData.players;
+    }
+
+    return [];
+  }, [matchData]);
 
   return (
-    <div>
-      <InputField
-        placeholder="Enter MatchID"
-        value={matchId}
-        onChange={onChangeHandler}
-      />
-      <InputButton onClick={onClickHandler}>SearchMatch</InputButton>
-      <Container>
-        {loading}
-        {JSON.stringify(matchResponse, null, 2)}
-      </Container>
-    </div>
+    <Container>
+      {matchData.success ? (
+        processedPlayers.map((player, index) => (
+          <div key={index}>{JSON.stringify(player)}</div>
+        ))
+      ) : (
+        <div>{matchData.status}</div>
+      )}
+    </Container>
   );
 }
+
+const fetchMatches = async (searchTerm) => {
+  const players = [];
+
+  try {
+    const response = await fetch(
+      `https://api.opendota.com/api/matches/${searchTerm}`
+    );
+
+    const data = await response.json();
+
+    if (data?.players?.length) {
+      data.players.forEach((player) => {
+        players.push({
+          player_slot: player["player_slot"],
+          team_number: player["team_number"],
+          kda: player["kda"],
+        });
+      });
+
+      return {
+        success: true,
+        players: players,
+        status: "successfully fetched match",
+      };
+    } else if (data.error) {
+      return {
+        success: false,
+        players: [],
+        status: data.error,
+      };
+    } else {
+      return {
+        success: true,
+        players: [],
+        status: "Could not find match with id: " + searchTerm,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      players: [],
+      status: JSON.stringify(error),
+    };
+  }
+};

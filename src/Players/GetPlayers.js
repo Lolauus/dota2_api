@@ -1,51 +1,72 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Container } from "../Styling/Container";
-import { InputButton, InputField } from "../Styling/InputContainer";
-import ApiHandler from "../DataHandler/ApiHandler";
 
-export default function GetPlayers() {
-  const [accountId, setAccountId] = useState("");
-  const [player, setPlayer] = useState();
-  //playerID = "49317728";
+export default function GetPlayers({ searchTerm }) {
+  const [playerData, setPlayerData] = useState({
+    success: false,
+    playerInfo: {},
+    playerHeroes: {},
+    status: "",
+  });
 
-  // Vill man ha en separat state för load?
-  const fetchPlayers = async () => {
-    try {
-      if (accountId.length === 8) {
-        setPlayer("Loading...");
-        const response = await fetch(
-          `https://api.opendota.com/api/players/${accountId}`
-        );
-        const data = await response.json();
-        setAccountId("");
-        setPlayer(data);
-        if (!response.ok) {
-          throw new Error("To many requests");
-        }
-      }
-      if (accountId.length === 10) {
-        ApiHandler(accountId);
-      }
-    } catch (error) {
-      console.error("Error", error);
-      setPlayer("Error loading page");
+  useEffect(() => {
+    async function fetchData(searchTerm) {
+      const data = await fetchPlayerInfo(searchTerm);
+      setPlayerData(data);
     }
-  };
-  const onClickHandler = () => {
-    fetchPlayers();
-  };
-  const onChangeHandler = (e) => {
-    setAccountId(e.target.value);
-  };
+
+    fetchData(searchTerm);
+  }, [searchTerm]);
+
+  const processedData = useMemo(() => {
+    if (playerData.success) {
+      return playerData.players;
+    }
+
+    return [];
+  }, [playerData]);
+
   return (
-    <div>
-      <InputField
-        value={accountId}
-        placeholder="Enter playerID"
-        onChange={onChangeHandler}
-      />
-      <InputButton onClick={onClickHandler}>Search PlayerID</InputButton>
-      <Container>{JSON.stringify(player, null, 2)}</Container>
-    </div>
+    <Container>
+      {playerData.success ? (
+        processedData.map((player, index) => (
+          <div key={index}>{JSON.stringify(player)}</div>
+        ))
+      ) : (
+        <div>{playerData.status}</div>
+      )}
+    </Container>
   );
 }
+
+const fetchPlayerInfo = async (searchTerm) => {
+  const data = {
+    success: false,
+    playerInfo: {},
+    playerHeroes: {},
+    status: "",
+  };
+
+  const playersInfoResponse = await fetch(
+    `https://api.opendota.com/api/players/${searchTerm}`
+  );
+
+  const playerHeroesResponse = await fetch(
+    `https://api.opendota.com/api/players/${searchTerm}/heroes`
+  );
+
+  const playerInfo = await playersInfoResponse.json();
+  const playerHeroes = await playerHeroesResponse.json();
+
+  if (playerInfo.error || playerHeroes.error) {
+    data.success = false;
+    data.status = playerHeroes.error ?? playerInfo.error;
+  } else {
+    data.success = true;
+    data.playerInfo = playerInfo;
+    data.playerHeroes = playerHeroes;
+    data.status = "success";
+  }
+
+  return data;
+};
