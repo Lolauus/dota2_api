@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container } from "../Styling/Container";
+import ShowMatchResult from "./ShowMatchResult";
 //Matchid = " 7700432060";
 export default function GetMatches({ searchTerm }) {
   const [matchData, setMatchData] = useState({
@@ -27,13 +28,10 @@ export default function GetMatches({ searchTerm }) {
 
   return (
     <Container>
-      {matchData.success ? (
-        processedPlayers.map((player, index) => (
-          <div key={index}>{JSON.stringify(player)}</div>
-        ))
-      ) : (
-        <div>{matchData.status}</div>
-      )}
+      <ShowMatchResult
+        matchData={matchData}
+        processedPlayers={processedPlayers}
+      />
     </Container>
   );
 }

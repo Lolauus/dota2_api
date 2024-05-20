@@ -1,10 +1,8 @@
 import { useState, useCallback } from "react";
-import GetPlayers from "./Players/GetPlayers";
 import { InputField, InputButton } from "./Styling/InputContainer";
 import { GlobalStyle } from "./Styling/GlobalStyle";
 import GetMatches from "./Matches/GetMatches";
-
-//För att hålla App.js ren så skapade jag en main som sen APP
+import GetPlayers from "./Players/GetPlayers";
 
 export default function Main() {
   const [value, setValue] = useState("");
@@ -26,18 +24,13 @@ export default function Main() {
         placeholder="Enter Player or MatchID"
         onChange={onChangeHandler}
       ></InputField>
-      <InputButton onClick={onClickHandler}>Search match</InputButton>
-      {/* <Container></Container> */}
+      <InputButton onClick={onClickHandler}>Search</InputButton>
       {searchTerm ? (
         <>
           <GetMatches searchTerm={searchTerm} />
           <GetPlayers searchTerm={searchTerm} />
         </>
       ) : null}
-      {/* <GlobalStyle />
-      <GetMatches 
-      <GetPlayers />
-    <GetPlayerHeroes /> */}
     </div>
   );
 }

@@ -1,6 +1,4 @@
 import styled from "styled-components";
-//Är detta ett korrekt sätt att använda styled-components
-//eller gör man det hellre i enskild komponent?
 export const InputField = styled.input`
   width: 90%;
   padding: 12px 20px;

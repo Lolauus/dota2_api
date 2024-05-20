@@ -1,2 +1,0 @@
-Skapa en MAIN-komponent som har ett input field, baserat på värdet som skickas in ska den kalla andra komponeneter
-
