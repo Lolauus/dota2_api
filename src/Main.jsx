@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { InputField, InputButton } from "./Styling/InputContainer";
 import { GlobalStyle } from "./Styling/GlobalStyle";
-import GetMatches from "./Matches/GetMatches";
+import GetMatches from "./Matches/GetMatches.jsx";
 import GetPlayers from "./Players/GetPlayers";
 
 export default function Main() {
